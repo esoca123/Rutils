@@ -83,14 +83,13 @@ const rename = R.curry( ( oldName, newName, obj ) => {
     }
 
 
-    const process = R.pipe(
+    const go = R.pipe(
         R.prop( oldName ),
-        R.tap( console.log ),
         R.assoc( newName, R.__, obj ),
         R.omit([oldName])
     );
 
-    return process( obj );
+    return go( obj );
 })
 
 

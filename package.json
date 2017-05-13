@@ -43,7 +43,10 @@
   "bugs": {
     "url": "https://github.com/esoca123/Rutils/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "ramda": "^0.23.0"
+  },
   "description": "ramda utiliy functions to improve productivity",
   "devDependencies": {},
   "directories": {},
