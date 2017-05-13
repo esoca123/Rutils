@@ -5,19 +5,21 @@ const u = require('./src/index.js');
 const R = require( 'ramda');
 
 
-const merge = (Robj, uObj) => {
+// const merge = (Robj, uObj) => {
+//
+//     let RPairs = R.toPairs( Robj );
+//     let uPairs = R.toPairs( uObj );
+//
+//     let RuPairs = R.concat( RPairs, uPairs );
+//
+//     let RuObj = R.fromPairs( RuPairs );
+//
+//     return RuObj;
+// }
 
-    let RPairs = R.toPairs( Robj );
-    let uPairs = R.toPairs( uObj );
 
-    let RuPairs = R.concat( RPairs, uPairs );
+const Ru = merge( R, u );
 
-    let RuObj = R.fromPairs( RuPairs );
-
-    return RuObj;
-}
-
-
-const Ru = R.merge( R, u );
+console.log( R.keys( Ru ) )
 
 module.exports = Ru;

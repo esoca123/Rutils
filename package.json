@@ -1,0 +1,82 @@
+{
+  "_args": [
+    [
+      "rutils",
+      "/home/esoca123/local/repos/rost/sharla/sharla-api"
+    ]
+  ],
+  "_from": "rutils@latest",
+  "_id": "rutils@1.0.0",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/rutils",
+  "_nodeVersion": "6.3.1",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/rutils-1.0.0.tgz_1493368220426_0.31098042125813663"
+  },
+  "_npmUser": {
+    "email": "esoca123@gmail.com",
+    "name": "esoca123npm"
+  },
+  "_npmVersion": "3.10.3",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "rutils",
+    "raw": "rutils",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/rutils/-/rutils-1.0.0.tgz",
+  "_shasum": "fd2fc8c94d2109aa42cc4fec17e92218ea35b5c8",
+  "_shrinkwrap": null,
+  "_spec": "rutils",
+  "_where": "/home/esoca123/local/repos/rost/sharla/sharla-api",
+  "author": {
+    "name": "Emilio Soca"
+  },
+  "bugs": {
+    "url": "https://github.com/esoca123/Rutils/issues"
+  },
+  "dependencies": {},
+  "description": "ramda utiliy functions to improve productivity",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "fd2fc8c94d2109aa42cc4fec17e92218ea35b5c8",
+    "tarball": "https://registry.npmjs.org/rutils/-/rutils-1.0.0.tgz"
+  },
+  "gitHead": "477b13661bd1fa98d869750c4c1ecd0c39d18ccd",
+  "homepage": "https://github.com/esoca123/Rutils#readme",
+  "keywords": [
+    "functional",
+    "programming",
+    "ramda",
+    "utility",
+    "composition"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "email": "esoca123@gmail.com",
+      "name": "esoca123npm"
+    }
+  ],
+  "name": "rutils",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/esoca123/Rutils.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0"
+}

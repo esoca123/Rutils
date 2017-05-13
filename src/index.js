@@ -3,7 +3,15 @@
 const R = require('ramda');
 const _ = require('lodash');
 
+const F = require('fluture');
 
+const futurizeLib = require('futurize');
+const futurize  = futurizeLib.futurize( F );
+const futurizeV = futurizeLib.futurizeV( F );
+const futurizeP = futurizeLib.futurizeP( F );
+
+const snakeCase = _.snakeCase;
+const camelCase = _.camelCase;
 
 
 const decorate = (...rest) => {
@@ -130,16 +138,16 @@ const isLowerCase = R.chain( R.equals, R.toLower );
 const isEmptyString = R.both( R.is(String), R.isEmpty );
 
 
+const lookupFrom = R.flip( R.prop );
 
 
 
-const preserveOrderBy = R.curry( ( fn , ids, objs) => {
+const preserveOrderBy = R.curry( (fn, xs, objs) => {
 
-    const objsIndexedByFn = R.indexBy( fn, objs );
+    let objsIndexed = R.indexBy( fn, objs );
 
-
-    return R.map( R.prop(R.__, objsIndexedByFn ) ,  ids )
-})
+    return R.map(  x => objsIndexed[ x ] || null  ,  xs )
+} );
 
 
 const preserveOrderByIds = preserveOrderBy( R.prop('id') );
@@ -157,64 +165,60 @@ const preserveGroupOrderBy = R.curry( ( fn , ids, objs) => {
 
 
 
-const lookupFrom = R.flip( R.prop );
 
 
 
-const preserveListStructureBy = R.curry( (fn, ks, objs) => {
+const preserveStructureBy = R.curry( (projFnsOrIndexFn, xs, objs) => {
 
-    let objsIndexedByFn = R.indexBy( fn, objs );
 
-    const go = function go( term ){
+    let projFns = R.is( Function, projFnsOrIndexFn ) ?
+        [projFnsOrIndexFn, R.identity ]
+      : projFnsOrIndexFn;
 
-        if( R.isNil( term ) ){
+
+    let [ indexFn, nextFn ] = projFns;
+
+
+    let objsIndexed = R.indexBy( indexFn, objs );
+
+
+    const go = function go( xs ){
+
+        if( R.isNil(xs) ){
             return null
+        };
+
+        if( R.is( Array, xs ) ){
+            return R.map( go, xs )
         }
 
-        if( R.is( Array, term ) ){
-            return R.map( go, term )
+
+        if( R.is( Object, xs ) ){
+
+            let key = indexFn( xs );
+            return nextFn(objsIndexed[ key ]);
         }
 
-        return objsIndexedByFn[ term ]
-    }
+        return nextFn( objsIndexed[ xs ] )
+    };
 
-    return go( ks );
-} )
-
-const preserveListStructureByIds = preserveListStructureBy( R.prop('id') )
+    return go( xs );
+} );
 
 
-
-const preserveListStructureGroupedBy = R.curry( (fn, ks, objs) => {
-
-    let objsGroupedByFn = R.groupBy( fn, objs );
-
-    const go = function go( term ){
-
-        if( R.isNil( term ) ){
-            return null
-        }
-
-        if( R.is( Array, term ) ){
-            return R.map( go, term )
-        }
-
-        return objsGroupedByFn[ term ]
-    }
-
-    return go( ks );
-} )
-
-const preserveListStructureGroupedByIds = preserveListStructureGroupedBy( R.prop('id') )
+const preserveStructureByIds = preserveStructureBy( R.prop('id') );
 
 
 
 
-const flattenAndCleanIds = R.pipe(
-    R.flatten,
-    R.uniq,
-    R.reject( R.isNil )
-)
+
+const flattenAndClean = R.unless(
+    R.isNil,
+    R.pipe(
+        R.flatten,
+        R.reject( R.isNil )
+    )
+);
 
 
 
@@ -238,7 +242,7 @@ const indexesFromList = R.lift( R.times( R.identity ) )( R.length );
 
 
 
-const defaultObjTo = R.mergeWith( R.defaultTo );
+
 
 
 
@@ -323,26 +327,133 @@ const deepMerge = deepMergeWith( R.nthArg(1) )
 
 
 
-const defaultDeepObjTo = deepMergeWith( R.defaultTo );
+
+
+
+const _mkDefaultObjTo = R.curry( (merge, defaultObj, obj) => {
+
+    let _defaultObj = R.defaultTo( {}, defaultObj  );
+    let _obj = R.defaultTo( {}, obj  );
+
+
+
+    return merge( R.defaultTo, _defaultObj, _obj );
+} )
+
+
+const defaultDeepObjTo = _mkDefaultObjTo( deepMergeWith )
+
+const defaultObjTo = _mkDefaultObjTo( R.mergeWith )
+
+
+
+
+
+
+const pack = R.curry( (name, fields, obj) => {
+
+    return R.lift( R.assoc(name) )(R.pick(fields), R.omit(fields))(obj);
+} );
+
+
+
+const packMany = R.curry( (list, obj) => {
+
+    const reducerFn = ( [allFieldsToPack, o], [name, fields]) => {
+
+        let nextAllFieldsTopack = R.concat( allFieldsToPack, fields );
+        let nextObj = R.merge( o, pack( name, fields, obj ) );
+
+        return [ nextAllFieldsTopack, nextObj ];
+    }
+
+    let [ allFieldsToPack, objPacked ] = R.reduce( reducerFn, [[], {}],  list );
+
+    return R.omit(allFieldsToPack, objPacked );
+} );
+
+
+
+
+
+const toPairsProtoChain = obj => {
+
+    let kvPairs = [];
+
+    _.forIn( obj, (v,k,context) => kvPairs.push([k, v]) )
+
+    return kvPairs;
+}
+
+
+
+
+
+
+
+const _setFuturizeAllDefaultOptionsSpec = defaultObjTo({
+    suffix          : 'F',
+    futurizeFn      : futurize
+});
+
+const futurizeAll = (obj, optionsSpec) => {
+
+    let {
+        suffix,
+        futurizeFn
+    } = _setFuturizeAllDefaultOptionsSpec( optionsSpec )
+
+
+    const mkNewKVpair = ([k, fn]) => [`${k}${suffix}`, futurizeFn( fn.bind(obj) )]
+
+    const futurizeKey = R.chain( R.pair, mkNewKVpair );
+
+    const valueIsFn = R.pipe(
+        R.nth(1),
+        R.is( Function )
+    )
+
+    const futurizeKeyIfFn = R.ifElse(
+        valueIsFn,
+        futurizeKey,
+        R.of
+    )
+
+    const go = R.pipe(
+        toPairsProtoChain,
+        R.chain( futurizeKeyIfFn ),
+        R.fromPairs
+    );
+
+
+    return go( obj );
+};
+
+
+
 
 
 
 
 
 // alias
-
-const id = R.identity;
-
+const I     = R.identity;
 const compl = R.complement;
-
+const K     = R.always;
 
 
 module.exports = {
     decorate,
-    mapKeys,
-    camelCaseKeys,
+
+    snakeCase,
+    camelCase,
     snakeCaseKeys,
+    camelCaseKeys,
+    mapKeys,
     parseJSON,
+    toCapitalCase,
+    toCapitalCaseEachWord,
+
     isNotNil,
     rename,
     renameAll,
@@ -351,29 +462,38 @@ module.exports = {
     isUpperCase,
     isLowerCase,
     isEmptyString,
+    lookupFrom,
+
     preserveOrderBy,
     preserveOrderByIds,
     preserveGroupOrderBy,
-    lookupFrom,
-    preserveListStructureBy,
-    preserveListStructureByIds,
-    preserveListStructureGroupedBy,
-    preserveListStructureGroupedByIds,
-    flattenAndCleanIds,
+    preserveStructureBy,
+    preserveStructureByIds,
+    // preserveListStructureGroupedBy,
+    // preserveListStructureGroupedByIds,
+    // flattenAndCleanIds,
+    flattenAndClean,
     zipAllWith,
     concatAll,
     indexesFromList,
-    defaultObjTo,
     sortUsing,
     inside,
     propInside,
-    toCapitalCase,
-    toCapitalCaseEachWord,
+
     isNotArray,
     isPlainObj,
     deepMergeWith,
     deepMerge,
     defaultDeepObjTo,
-    id,
+    defaultObjTo,
+
+    pack,
+    packMany,
+
+    futurizeAll,
+    toPairsProtoChain,
+
+    I,
     compl,
+    K
 }
