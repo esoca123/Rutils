@@ -221,17 +221,7 @@ const flattenAndClean = R.unless(
 
 
 
-const zipAllWith = R.curry( (f, xss) => {
 
-    const fFixArity = R.apply( f );
-
-    const go = R.pipe(
-        R.transpose,
-        R.map( fFixArity )
-    );
-
-    return go( xss )
-});
 
 
 const concatAll = R.reduce( R.concat, [] );
@@ -430,6 +420,101 @@ const futurizeAll = (obj, optionsSpec) => {
 
 
 
+const maxAll = R.reduce( R.max, -Infinity );
+
+
+
+const maxCodBy = R.curry( (fn,x,y) => {
+
+  let xRes = fn( x )
+  let yRes = fn( y ) ;
+
+  return xRes > yRes ? xRes : yRes;
+});
+
+
+const maxByAll = R.curry( ( fn, xs ) => {
+
+    return R.reduce( R.maxBy(fn) , -Infinity, xs )
+})
+
+
+
+const maxCodByAll = R.curry( ( fn, xs ) => {
+
+    return R.reduce( maxCodBy(fn) , -Infinity, xs )
+})
+
+
+
+const zipAllWith = R.curry( (f, xss) => {
+
+    const fFixArity = R.apply( f );
+
+    const go = R.pipe(
+        R.transpose,
+        R.map( fFixArity )
+    );
+
+    return go( xss )
+});
+
+
+
+
+
+const _fillNullsLongest = xss => {
+
+    let maxXsLength = maxCodByAll( R.when( R.is( Array ), R.length) , xss );
+
+    const fillNull = xs => {
+
+        let xsLength = R.length( xs );
+
+        let nullListSize = maxXsLength - xsLength;
+
+        let nullList = R.repeat( null,  nullListSize);
+
+        return R.concat( xs, nullList )
+    };
+
+    return R.map(  R.when( xs => R.length(xs) < maxXsLength, fillNull ),  xss )
+}
+
+
+
+const zipLongAllWith = R.curry( (f, xss) => {
+
+    const fFixArity = R.apply( f );
+
+    const go = R.pipe(
+        _fillNullsLongest,
+        R.transpose,
+        R.map( fFixArity )
+    );
+
+    return go( xss )
+});
+
+
+
+const zipLongWith = R.curry( (fn, xs, ys)  => {
+    let l1 = xs;
+    let l2 = ys;
+
+    if (xs.length < ys.length) {
+        l1 = R.concat(xs, R.repeat(null, ys.length - xs.length))
+    }
+    else if (ys.length < xs.length) {
+        l2 = R.concat(ys, R.repeat(null, xs.length - ys.length))
+    }
+
+    return R.zipWith(fn,l1, l2)
+});
+
+
+const zipLong = zipLongWith( R.pair );
+
 
 
 
@@ -472,7 +557,12 @@ module.exports = {
     // preserveListStructureGroupedByIds,
     // flattenAndCleanIds,
     flattenAndClean,
+
     zipAllWith,
+    zipLongWith,
+    zipLong,
+
+
     concatAll,
     indexesFromList,
     sortUsing,
