@@ -561,6 +561,12 @@ module.exports = {
     zipAllWith,
     zipLongWith,
     zipLong,
+    zipLongAllWith,
+
+    maxAll,
+    maxCodBy,
+    maxByAll,
+    maxCodByAll,
 
 
     concatAll,
