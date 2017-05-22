@@ -518,6 +518,18 @@ const zipLong = zipLongWith( R.pair );
 
 
 
+const fst = R.nth( 0 );
+const snd = R.nth( 1 );
+const thd = R.nth( 1 );
+
+const fstArg = R.nthArg( 0 );
+const sndArg = R.nthArg( 1 );
+const thdArg = R.nthArg( 2 );
+
+
+
+
+
 
 
 // alias
@@ -587,6 +599,13 @@ module.exports = {
 
     futurizeAll,
     toPairsProtoChain,
+
+    fst,
+    snd,
+    thd,
+    fstArg,
+    sndArg,
+    thdArg,
 
     I,
     compl,
