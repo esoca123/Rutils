@@ -288,11 +288,7 @@ const toCapitalCaseEachWord = R.pipe(
 const isNotArray = R.complement( R.is( Array ) );
 
 
-const isPlainObj = R.both(
-   isNotArray,
-   R.is( Object )
-)
-
+const isPlainObj = _.isPlainObject
 
 
 
@@ -322,7 +318,7 @@ const deepMerge = deepMergeWith( R.nthArg(1) )
 const _mkDefaultObjTo = R.curry( (merge, defaultObj, obj) => {
 
     let _defaultObj = R.defaultTo( {}, defaultObj  );
-    let _obj = R.defaultTo( {}, obj  );
+    let _obj = R.defaultTo( _defaultObj, obj  );
 
 
 
