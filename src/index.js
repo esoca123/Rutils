@@ -523,7 +523,16 @@ const sndArg = R.nthArg( 1 );
 const thdArg = R.nthArg( 2 );
 
 
+const between = R.curry( (l,r,xs) => {
 
+    const go = R.cond([
+        [ R.is( String ),           str => `${l}${str}${r}`     ],
+        [ R.is( Array ),            R.compose( R.prepend(l), R.append(r)  )],
+        [ R.T,                      x => [l,x,r]             ],
+    ])
+
+    return go( xs )
+} )
 
 
 
@@ -602,6 +611,8 @@ module.exports = {
     fstArg,
     sndArg,
     thdArg,
+
+    between,
 
     I,
     compl,
