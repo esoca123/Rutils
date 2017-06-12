@@ -47,7 +47,7 @@
     "fluture": "^5.0.0",
     "futurize": "^1.2.0",
     "lodash": "^4.17.4",
-    "ramda": "^0.23.0"
+    "ramda": "^0.24.1"
   },
   "description": "ramda utiliy functions to improve productivity",
   "devDependencies": {},
