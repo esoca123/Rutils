@@ -543,6 +543,9 @@ const compl = R.complement;
 const K     = R.always;
 
 
+const mapIndexed = Ru.addIndex( Ru.map );
+
+
 module.exports = {
     decorate,
 
@@ -616,5 +619,7 @@ module.exports = {
 
     I,
     compl,
-    K
+    K,
+
+    mapIndexed
 }
