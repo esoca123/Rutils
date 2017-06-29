@@ -549,6 +549,7 @@ const between = R.curry( (l,r,xs) => {
 
 
 
+const mapIndexed = R.addIndex( R.map );
 
 
 
@@ -559,7 +560,6 @@ const compl = R.complement;
 const K     = R.always;
 
 
-const mapIndexed = Ru.addIndex( Ru.map );
 
 
 module.exports = {
