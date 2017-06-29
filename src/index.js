@@ -619,6 +619,7 @@ module.exports = {
     defaultObjTo,
 
     pack,
+    unpack,
     packMany,
 
     futurizeAll,
