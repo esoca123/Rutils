@@ -342,6 +342,19 @@ const pack = R.curry( (name, fields, obj) => {
 
 
 
+const unpack = R.curry( (name, fields, obj) => {
+
+    let fieldsObj = obj[ name ];
+
+    let fieldsObjWithoutFields = R.omit( fields, obj );
+
+    return R.merge( obj, fieldsObjWithoutFields );
+} );
+
+
+
+
+
 const packMany = R.curry( (list, obj) => {
 
     const reducerFn = ( [allFieldsToPack, o], [name, fields]) => {
@@ -533,6 +546,9 @@ const between = R.curry( (l,r,xs) => {
 
     return go( xs )
 } )
+
+
+
 
 
 
