@@ -342,6 +342,24 @@ const pack = R.curry( (name, fields, obj) => {
 
 
 
+const unpack = R.curry( (name, fields, obj) => {
+
+    let nameObj = obj[ name ];
+
+    let newNameObj = R.omit( fields, nameObj );
+    let newObj = R.assoc(name, newNameObj, obj );
+
+    let topNewNameObj = R.pick( fields, nameObj );
+
+    return R.merge( newObj, topNewNameObj)
+} );
+
+
+
+
+
+
+
 const packMany = R.curry( (list, obj) => {
 
     const reducerFn = ( [allFieldsToPack, o], [name, fields]) => {
@@ -555,11 +573,20 @@ const propIsNil = Ru.pipe(
 
 const propIsNotNil = Ru.complement(propIsNil)
 
+const mapIndexed = R.addIndex( R.map );
+
+
+const xor = R.curry( (x,y) =>  (x || y) &&  !( x && y )  );
+const xnor = (x,y) => !( xor(x,y) );
+
+
 
 // alias
 const I     = R.identity;
 const compl = R.complement;
 const K     = R.always;
+
+
 
 
 module.exports = {
@@ -619,6 +646,7 @@ module.exports = {
     defaultObjTo,
 
     pack,
+    unpack,
     packMany,
 
     futurizeAll,
@@ -641,4 +669,9 @@ module.exports = {
     logWithTime,
     tapLog,
     tapLogWithTime
+
+    mapIndexed,
+
+    xor,
+    xnor
 }
