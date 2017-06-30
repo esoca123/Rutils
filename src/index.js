@@ -557,6 +557,9 @@ const between = R.curry( (l,r,xs) => {
 const mapIndexed = R.addIndex( R.map );
 
 
+const xor = Ru.curry( (x,y) =>  (x || y) &&  !( x && y )  );
+const xnor = (x,y) => !( xor(x,y) );
+
 
 
 // alias
@@ -643,5 +646,8 @@ module.exports = {
     compl,
     K,
 
-    mapIndexed
+    mapIndexed,
+
+    xor
+    xnor
 }
