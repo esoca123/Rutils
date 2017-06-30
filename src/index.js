@@ -344,12 +344,17 @@ const pack = R.curry( (name, fields, obj) => {
 
 const unpack = R.curry( (name, fields, obj) => {
 
-    let fieldsObj = obj[ name ];
+    let nameObj = obj[ name ];
 
-    let fieldsObjWithoutFields = R.omit( fields, obj );
+    let newNameObj = R.omit( fields, nameObj );
+    let newObj = R.assoc(name, newNameObj, obj );
 
-    return R.merge( obj, fieldsObjWithoutFields );
+    let topNewNameObj = R.pick( fields, nameObj );
+
+    return R.merge( newObj, topNewNameObj)
 } );
+
+
 
 
 
