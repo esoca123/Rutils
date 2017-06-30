@@ -557,7 +557,7 @@ const between = R.curry( (l,r,xs) => {
 const mapIndexed = R.addIndex( R.map );
 
 
-const xor = Ru.curry( (x,y) =>  (x || y) &&  !( x && y )  );
+const xor = R.curry( (x,y) =>  (x || y) &&  !( x && y )  );
 const xnor = (x,y) => !( xor(x,y) );
 
 
@@ -648,6 +648,6 @@ module.exports = {
 
     mapIndexed,
 
-    xor
+    xor,
     xnor
 }
