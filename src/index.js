@@ -562,8 +562,7 @@ const xnor = (x,y) => !( xor(x,y) );
 
 const notEq = R.complement( R.equals );
 
-const mergeAllWith = Ru.curry( (fn, xs) =>  R.reduce( R.mergeWith( fn ), {}, xs ) );
-
+const mergeAllWith = R.curry( (fn, xs) =>  R.reduce( R.mergeWith( fn ), {}, xs ) );
 
 
 // alias
