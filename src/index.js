@@ -571,8 +571,6 @@ const compl = R.complement;
 const K     = R.always;
 const eq    = R.equals;
 
-const blackbird = Ru.o( Ru.o, Ru.o )
-
 
 module.exports = {
     decorate,
