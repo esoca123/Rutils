@@ -560,13 +560,15 @@ const mapIndexed = R.addIndex( R.map );
 const xor = R.curry( (x,y) =>  (x || y) &&  !( x && y )  );
 const xnor = (x,y) => !( xor(x,y) );
 
+const notEq = R.complement( R.equals );
 
+const mergeAllWith = R.reduce( R.mergeWith, {} );
 
 // alias
 const I     = R.identity;
 const compl = R.complement;
 const K     = R.always;
-
+const eq    = R.equals;
 
 
 
@@ -649,5 +651,9 @@ module.exports = {
     mapIndexed,
 
     xor,
-    xnor
+    xnor,
+    notEq,
+    eq,
+
+    mergeAllWith
 }
