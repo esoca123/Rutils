@@ -562,7 +562,9 @@ const xnor = (x,y) => !( xor(x,y) );
 
 const notEq = R.complement( R.equals );
 
-const mergeAllWith = R.reduce( R.mergeWith, {} );
+const mergeAllWith = Ru.curry( (fn, xs) =>  R.reduce( R.mergeWith( fn ), {}, xs ) );
+
+
 
 // alias
 const I     = R.identity;
@@ -570,6 +572,7 @@ const compl = R.complement;
 const K     = R.always;
 const eq    = R.equals;
 
+const blackbird = Ru.o( Ru.o, Ru.o )
 
 
 module.exports = {
