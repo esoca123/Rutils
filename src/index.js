@@ -431,7 +431,7 @@ const futurizeAll = (obj, optionsSpec) => {
 
 
 
-
+const mapIndexed = R.addIndex( R.map );
 
 
 
@@ -491,6 +491,8 @@ module.exports = {
 
     futurizeAll,
     toPairsProtoChain,
+
+    mapIndexed,
 
     I,
     compl,
