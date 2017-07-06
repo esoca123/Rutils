@@ -221,17 +221,7 @@ const flattenAndClean = R.unless(
 
 
 
-const zipAllWith = R.curry( (f, xss) => {
 
-    const fFixArity = R.apply( f );
-
-    const go = R.pipe(
-        R.transpose,
-        R.map( fFixArity )
-    );
-
-    return go( xss )
-});
 
 
 const concatAll = R.reduce( R.concat, [] );
@@ -298,11 +288,7 @@ const toCapitalCaseEachWord = R.pipe(
 const isNotArray = R.complement( R.is( Array ) );
 
 
-const isPlainObj = R.both(
-   isNotArray,
-   R.is( Object )
-)
-
+const isPlainObj = _.isPlainObject
 
 
 
@@ -332,7 +318,7 @@ const deepMerge = deepMergeWith( R.nthArg(1) )
 const _mkDefaultObjTo = R.curry( (merge, defaultObj, obj) => {
 
     let _defaultObj = R.defaultTo( {}, defaultObj  );
-    let _obj = R.defaultTo( {}, obj  );
+    let _obj = R.defaultTo( _defaultObj, obj  );
 
 
 
@@ -353,6 +339,24 @@ const pack = R.curry( (name, fields, obj) => {
 
     return R.lift( R.assoc(name) )(R.pick(fields), R.omit(fields))(obj);
 } );
+
+
+
+const unpack = R.curry( (name, fields, obj) => {
+
+    let nameObj = obj[ name ];
+
+    let newNameObj = R.omit( fields, nameObj );
+    let newObj = R.assoc(name, newNameObj, obj );
+
+    let topNewNameObj = R.pick( fields, nameObj );
+
+    return R.merge( newObj, topNewNameObj)
+} );
+
+
+
+
 
 
 
@@ -430,15 +434,142 @@ const futurizeAll = (obj, optionsSpec) => {
 
 
 
+const maxAll = R.reduce( R.max, -Infinity );
+
+
+
+const maxCodBy = R.curry( (fn,x,y) => {
+
+  let xRes = fn( x )
+  let yRes = fn( y ) ;
+
+  return xRes > yRes ? xRes : yRes;
+});
+
+
+const maxByAll = R.curry( ( fn, xs ) => {
+
+    return R.reduce( R.maxBy(fn) , -Infinity, xs )
+})
+
+
+
+const maxCodByAll = R.curry( ( fn, xs ) => {
+
+    return R.reduce( maxCodBy(fn) , -Infinity, xs )
+})
+
+
+
+const zipAllWith = R.curry( (f, xss) => {
+
+    const fFixArity = R.apply( f );
+
+    const go = R.pipe(
+        R.transpose,
+        R.map( fFixArity )
+    );
+
+    return go( xss )
+});
+
+
+
+
+
+const _fillNullsLongest = xss => {
+
+    let maxXsLength = maxCodByAll( R.when( R.is( Array ), R.length) , xss );
+
+    const fillNull = xs => {
+
+        let xsLength = R.length( xs );
+
+        let nullListSize = maxXsLength - xsLength;
+
+        let nullList = R.repeat( null,  nullListSize);
+
+        return R.concat( xs, nullList )
+    };
+
+    return R.map(  R.when( xs => R.length(xs) < maxXsLength, fillNull ),  xss )
+}
+
+
+
+const zipLongAllWith = R.curry( (f, xss) => {
+
+    const fFixArity = R.apply( f );
+
+    const go = R.pipe(
+        _fillNullsLongest,
+        R.transpose,
+        R.map( fFixArity )
+    );
+
+    return go( xss )
+});
+
+
+
+const zipLongWith = R.curry( (fn, xs, ys)  => {
+    let l1 = xs;
+    let l2 = ys;
+
+    if (xs.length < ys.length) {
+        l1 = R.concat(xs, R.repeat(null, ys.length - xs.length))
+    }
+    else if (ys.length < xs.length) {
+        l2 = R.concat(ys, R.repeat(null, xs.length - ys.length))
+    }
+
+    return R.zipWith(fn,l1, l2)
+});
+
+
+const zipLong = zipLongWith( R.pair );
+
+
+
+
+const fst = R.nth( 0 );
+const snd = R.nth( 1 );
+const thd = R.nth( 2 );
+
+const fstArg = R.nthArg( 0 );
+const sndArg = R.nthArg( 1 );
+const thdArg = R.nthArg( 2 );
+
+
+const between = R.curry( (l,r,xs) => {
+
+    const go = R.cond([
+        [ R.is( String ),           str => `${l}${str}${r}`     ],
+        [ R.is( Array ),            R.compose( R.prepend(l), R.append(r)  )],
+        [ R.T,                      x => [l,x,r]             ],
+    ])
+
+    return go( xs )
+} )
+
+
 
 const mapIndexed = R.addIndex( R.map );
 
+
+const xor = R.curry( (x,y) =>  (x || y) &&  !( x && y )  );
+const xnor = (x,y) => !( xor(x,y) );
+
+const notEq = R.complement( R.equals );
+
+const mergeAllWith = R.curry( (fn, xs) =>  R.reduce( R.mergeWith( fn ), {}, xs ) );
 
 
 // alias
 const I     = R.identity;
 const compl = R.complement;
 const K     = R.always;
+const eq    = R.equals;
 
 
 module.exports = {
@@ -472,7 +603,18 @@ module.exports = {
     // preserveListStructureGroupedByIds,
     // flattenAndCleanIds,
     flattenAndClean,
+
     zipAllWith,
+    zipLongWith,
+    zipLong,
+    zipLongAllWith,
+
+    maxAll,
+    maxCodBy,
+    maxByAll,
+    maxCodByAll,
+
+
     concatAll,
     indexesFromList,
     sortUsing,
@@ -487,14 +629,31 @@ module.exports = {
     defaultObjTo,
 
     pack,
+    unpack,
     packMany,
 
     futurizeAll,
     toPairsProtoChain,
 
-    mapIndexed,
+    fst,
+    snd,
+    thd,
+    fstArg,
+    sndArg,
+    thdArg,
+
+    between,
 
     I,
     compl,
-    K
+    K,
+
+    mapIndexed,
+
+    xor,
+    xnor,
+    notEq,
+    eq,
+
+    mergeAllWith
 }
