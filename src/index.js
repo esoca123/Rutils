@@ -288,7 +288,8 @@ const toCapitalCaseEachWord = R.pipe(
 const isNotArray = R.complement( R.is( Array ) );
 
 
-const isPlainObj = _.isPlainObject
+const isPlainObj = _.isPlainObject;
+const isNotPlainObj = R.complement( isPlainObj );
 
 
 
@@ -536,6 +537,10 @@ const fst = R.nth( 0 );
 const snd = R.nth( 1 );
 const thd = R.nth( 2 );
 
+const lensFst = R.lensIndex( 0 );
+const lensSnd = R.lensIndex( 1 );
+const lensThd = R.lensIndex( 2 );
+
 const fstArg = R.nthArg( 0 );
 const sndArg = R.nthArg( 1 );
 const thdArg = R.nthArg( 2 );
@@ -563,6 +568,43 @@ const xnor = (x,y) => !( xor(x,y) );
 const notEq = R.complement( R.equals );
 
 const mergeAllWith = R.curry( (fn, xs) =>  R.reduce( R.mergeWith( fn ), {}, xs ) );
+
+
+
+
+
+const deepMapKeys = Ru.curry( function deepMapKeys( mapping,value ){
+
+    //plain obj case. the recursive traversal continues with heach value. The keys are mapping
+    if( isPlainObj( value ) ){
+
+        let values = R.values( param );
+        let valuesModified = R.map( deepMapKeys,  values  );
+
+        let keys = R.keys( param  );
+        let transformedKeys = R.map( mapping , keys);
+
+        return R.zipObj(transformedKeys,   valuesModified )
+    }
+
+
+    //array case. the recursive traversal continue in each array element.
+    if( R.is( Array, value ) ){
+
+        return R.map( deepMapKeys, value )
+    }
+
+    //bottom of the recursive traversal
+    return value
+})
+
+
+
+const deepCamelCaseKeys = deepMapKeys( _.camelCase )
+
+const deepSnakeCaseKeys = deepMapKeys( _.snakeCase )
+
+
 
 
 // alias
@@ -655,5 +697,13 @@ module.exports = {
     notEq,
     eq,
 
-    mergeAllWith
+    mergeAllWith,
+
+    lensFst,
+    lensSnd,
+    lensThd,
+
+    deepMapKeys,
+    deepCamelCaseKeys,
+    deepSnakeCaseKeys,
 }
