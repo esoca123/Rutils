@@ -558,25 +558,6 @@ const between = R.curry( (l,r,xs) => {
 } )
 
 
-const logWithTime = (...args) => {
-
-  let argsWithTime = [`[${moment().utc().format()}]: `, ...args]
-  
-  return Ru.apply(console.log, argsWithTime)
-}
-
-const tapLog = (...args) => Ru.tap(Ru.apply(console.log), args)
-
-
-const tapLogWithTime = (...args) => Ru.tap(Ru.apply(logWithTime), args)
-
-
-const propIsNil = Ru.pipe(
-    Ru.curry((prop, item) => Ru.prop(prop, item)),
-    Ru.isNil
-)
-
-const propIsNotNil = Ru.complement(propIsNil)
 
 const mapIndexed = R.addIndex( R.map );
 
@@ -592,7 +573,7 @@ const mergeAllWith = R.curry( (fn, xs) =>  R.reduce( R.mergeWith( fn ), {}, xs )
 
 
 
-const deepMapKeys = Ru.curry( function deepMapKeys( mapping,value ){
+const deepMapKeys = R.curry( function deepMapKeys( mapping,value ){
 
     //plain obj case. the recursive traversal continues with heach value. The keys are mapping
     if( isPlainObj( value ) ){
@@ -708,11 +689,6 @@ module.exports = {
     I,
     compl,
     K,
-    propIsNil,
-    propIsNotNil,
-    logWithTime,
-    tapLog,
-    tapLogWithTime
 
     mapIndexed,
 
