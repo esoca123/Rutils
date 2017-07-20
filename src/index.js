@@ -558,6 +558,25 @@ const between = R.curry( (l,r,xs) => {
 } )
 
 
+const logWithTime = (...args) => {
+
+  let argsWithTime = [`[${moment().utc().format()}]: `, ...args]
+  
+  return Ru.apply(console.log, argsWithTime)
+}
+
+const tapLog = (...args) => Ru.tap(Ru.apply(console.log), args)
+
+
+const tapLogWithTime = (...args) => Ru.tap(Ru.apply(logWithTime), args)
+
+
+const propIsNil = Ru.pipe(
+    Ru.curry((prop, item) => Ru.prop(prop, item)),
+    Ru.isNil
+)
+
+const propIsNotNil = Ru.complement(propIsNil)
 
 const mapIndexed = R.addIndex( R.map );
 
@@ -689,6 +708,11 @@ module.exports = {
     I,
     compl,
     K,
+    propIsNil,
+    propIsNotNil,
+    logWithTime,
+    tapLog,
+    tapLogWithTime
 
     mapIndexed,
 
