@@ -591,7 +591,7 @@ const deepMapKeys = R.curry( function deepMapKeys( mapping,value ){
     //array case. the recursive traversal continue in each array element.
     if( R.is( Array, value ) ){
 
-        return R.map( x => deepMapKeys(mappgin ,x), value )
+        return R.map( x => deepMapKeys(mapping ,x), value )
     }
 
     //bottom of the recursive traversal
