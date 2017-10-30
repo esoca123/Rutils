@@ -5,10 +5,7 @@ const _ = require('lodash');
 
 const F = require('fluture');
 
-const futurizeLib = require('futurize');
-const futurize  = futurizeLib.futurize( F );
-const futurizeV = futurizeLib.futurizeV( F );
-const futurizeP = futurizeLib.futurizeP( F );
+
 
 const snakeCase = _.snakeCase;
 const camelCase = _.camelCase;
@@ -392,49 +389,6 @@ const toPairsProtoChain = obj => {
 
 
 
-
-
-
-const _setFuturizeAllDefaultOptionsSpec = defaultObjTo({
-    suffix          : 'F',
-    futurizeFn      : futurize
-});
-
-const futurizeAll = (obj, optionsSpec) => {
-
-    let {
-        suffix,
-        futurizeFn
-    } = _setFuturizeAllDefaultOptionsSpec( optionsSpec )
-
-
-    const mkNewKVpair = ([k, fn]) => [`${k}${suffix}`, futurizeFn( fn.bind(obj) )]
-
-    const futurizeKey = R.chain( R.pair, mkNewKVpair );
-
-    const valueIsFn = R.pipe(
-        R.nth(1),
-        R.is( Function )
-    )
-
-    const futurizeKeyIfFn = R.ifElse(
-        valueIsFn,
-        futurizeKey,
-        R.of
-    )
-
-    const go = R.pipe(
-        toPairsProtoChain,
-        R.chain( futurizeKeyIfFn ),
-        R.fromPairs
-    );
-
-
-    return go( obj );
-};
-
-
-
 const maxAll = R.reduce( R.max, -Infinity );
 
 
@@ -606,6 +560,9 @@ const deepCamelCaseKeys = deepMapKeys( _.camelCase )
 
 const deepSnakeCaseKeys = deepMapKeys( _.snakeCase )
 
+const whenT = R.when( R.equals( true ) );
+const whenF = R.when( R.equals( false ) );
+
 
 
 // alias
@@ -675,7 +632,6 @@ module.exports = {
     unpack,
     packMany,
 
-    futurizeAll,
     toPairsProtoChain,
 
     fst,
@@ -707,4 +663,7 @@ module.exports = {
     deepMapKeys,
     deepCamelCaseKeys,
     deepSnakeCaseKeys,
+
+    whenT,
+    whenF
 }

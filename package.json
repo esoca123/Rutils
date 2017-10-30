@@ -50,7 +50,11 @@
     "ramda": "^0.24.1"
   },
   "description": "ramda utiliy functions to improve productivity",
-  "devDependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-latest": "^6.24.1"
+  },
   "directories": {},
   "dist": {
     "shasum": "fd2fc8c94d2109aa42cc4fec17e92218ea35b5c8",
@@ -66,7 +70,7 @@
     "composition"
   ],
   "license": "ISC",
-  "main": "index.js",
+  "main": "/lib",
   "maintainers": [
     {
       "email": "esoca123@gmail.com",
@@ -81,7 +85,8 @@
     "url": "git+https://github.com/esoca123/Rutils.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src --out-dir lib"
   },
   "version": "1.0.21"
 }
