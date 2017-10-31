@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.4",
-    "ramda": "^0.24.1"
+    "ramda": "^0.25.0"
   },
   "description": "ramda utiliy functions to improve productivity",
   "devDependencies": {
