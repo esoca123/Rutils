@@ -3,9 +3,6 @@
 const R = require('ramda');
 const _ = require('lodash');
 
-const F = require('fluture');
-
-
 
 const snakeCase = _.snakeCase;
 const camelCase = _.camelCase;
