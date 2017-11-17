@@ -562,6 +562,13 @@ const whenF = R.when( R.equals( false ) );
 const whenNil = R.when( R.isNil )
 const whenNotNil = R.when( isNotNil )
 
+const tapLog = Ru.curry( (tag, data) => {
+    
+    console.log(tag, data)
+    
+    return data 
+})
+
 // alias
 const I     = R.identity;
 const compl = R.complement;
@@ -662,5 +669,8 @@ module.exports = {
     deepSnakeCaseKeys,
 
     whenT,
-    whenF
+    whenF,
+    whenNil,
+    whenNotNil,
+    tapLog,
 }
