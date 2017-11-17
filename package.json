@@ -68,7 +68,7 @@
     "composition"
   ],
   "license": "ISC",
-  "main": "/lib",
+  "main": "lib",
   "maintainers": [
     {
       "email": "esoca123@gmail.com",
