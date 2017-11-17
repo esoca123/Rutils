@@ -513,8 +513,8 @@ const between = R.curry( (l,r,xs) => {
 const mapIndexed = R.addIndex( R.map );
 
 
-const xor = R.curry( (x,y) =>  (x || y) &&  !( x && y )  );
-const xnor = (x,y) => !( xor(x,y) );
+const xor = R.curry( (x,y) =>  (x || y) &&  !( x && y )  )
+const xnor = R.complement( xor )
 
 const notEq = R.complement( R.equals );
 
@@ -559,8 +559,8 @@ const deepSnakeCaseKeys = deepMapKeys( _.snakeCase )
 
 const whenT = R.when( R.equals( true ) );
 const whenF = R.when( R.equals( false ) );
-
-
+const whenNil = R.when( R.isNil )
+const whenNotNil = R.when( isNotNil )
 
 // alias
 const I     = R.identity;
