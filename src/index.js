@@ -1,10 +1,11 @@
 'use strict';
 
-const u = require('./utils.js');
+import * as R from 'ramda';
 
-const R = require( 'ramda');
+import * as u from './utils/index.js'
+
+
 
 const Ru = R.merge( R, u );
 
-
-module.exports = Ru;
+export default Ru;

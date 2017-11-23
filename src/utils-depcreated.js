@@ -1,7 +1,7 @@
 'use strict';
 
-const R = require('ramda');
-const _ = require('lodash');
+import * as R from 'ramda';;
+import _ from 'lodash';
 
 
 const snakeCase = _.snakeCase;
@@ -128,7 +128,7 @@ const omitBy = R.curry( (p,obj) =>  {
 const isUpperCase = R.chain( R.equals, R.toUpper );
 const isLowerCase = R.chain( R.equals, R.toLower );
 
-const isEmptyString = R.both( R.is(String), R.isEmpty );
+const isEmptyString = R.equals('');
 
 
 const lookupFrom = R.flip( R.prop );
@@ -283,7 +283,6 @@ const isNotArray = R.complement( R.is( Array ) );
 
 
 const isPlainObj = _.isPlainObject;
-const isNotPlainObj = R.complement( isPlainObj );
 
 
 
@@ -596,9 +595,7 @@ module.exports = {
     preserveGroupOrderBy,
     preserveStructureBy,
     preserveStructureByIds,
-    // preserveListStructureGroupedBy,
-    // preserveListStructureGroupedByIds,
-    // flattenAndCleanIds,
+
     flattenAndClean,
 
     zipAllWith,

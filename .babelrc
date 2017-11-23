@@ -1,3 +1,12 @@
 {
-  "presets": ["latest"]
+    "presets": [
+        [
+            "latest", { "es2015": { "modules": false } }
+        ]
+    ],
+    "plugins": [
+        "add-module-exports",
+        "external-helpers",
+        "annotate-pure-calls"
+    ]
 }
